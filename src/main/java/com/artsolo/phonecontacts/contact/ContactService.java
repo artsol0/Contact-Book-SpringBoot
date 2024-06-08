@@ -3,8 +3,10 @@ package com.artsolo.phonecontacts.contact;
 import com.artsolo.phonecontacts.contact.dto.AddContactRequest;
 import com.artsolo.phonecontacts.contact.dto.ContactResponse;
 import com.artsolo.phonecontacts.email.EmailAddress;
+import com.artsolo.phonecontacts.email.EmailAddressResponse;
 import com.artsolo.phonecontacts.exceptions.NoDataFoundException;
 import com.artsolo.phonecontacts.phone.PhoneNumber;
+import com.artsolo.phonecontacts.phone.PhoneNumberResponse;
 import com.artsolo.phonecontacts.user.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,15 +51,6 @@ public class ContactService {
         return contactRepository.save(contact);
     }
 
-    public ContactResponse getContactResponseFromContact(Contact contact) {
-        return ContactResponse.builder()
-                .id(contact.getId())
-                .name(contact.getName())
-                .emails(contact.getEmailAddresses().stream().map(EmailAddress::getEmail).toList())
-                .phones(contact.getPhoneNumbers().stream().map(PhoneNumber::getPhoneNumber).toList())
-                .build();
-    }
-
     public void deleteContact(Contact contact) {
         contactRepository.deleteById(contact.getId());
     }
@@ -75,13 +68,14 @@ public class ContactService {
         return contactRepository.findByUser(user).stream().map(this::getContactResponseFromContact).collect(Collectors.toList());
     }
 
-    private boolean isValidEmail(String email) {
-        String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
-        return email.matches(emailRegex);
-    }
-
-    private boolean isValidPhoneNumber(String phoneNumber) {
-        String phoneRegex = "^\\+38[0-9-]+$";
-        return phoneNumber.matches(phoneRegex);
+    public ContactResponse getContactResponseFromContact(Contact contact) {
+        return ContactResponse.builder()
+                .id(contact.getId())
+                .name(contact.getName())
+                .emails(contact.getEmailAddresses().stream().map(emailAddress ->
+                        new EmailAddressResponse(emailAddress.getId(), emailAddress.getEmail())).toList())
+                .phones(contact.getPhoneNumbers().stream().map(phoneNumber ->
+                        new PhoneNumberResponse(phoneNumber.getId(), phoneNumber.getPhoneNumber())).toList())
+                .build();
     }
 }

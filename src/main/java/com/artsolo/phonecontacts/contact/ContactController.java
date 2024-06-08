@@ -2,6 +2,8 @@ package com.artsolo.phonecontacts.contact;
 
 import com.artsolo.phonecontacts.contact.dto.AddContactRequest;
 import com.artsolo.phonecontacts.contact.dto.ContactResponse;
+import com.artsolo.phonecontacts.email.EmailAddress;
+import com.artsolo.phonecontacts.email.EmailAddressService;
 import com.artsolo.phonecontacts.responses.DataResponse;
 import com.artsolo.phonecontacts.responses.MessageResponse;
 import com.artsolo.phonecontacts.user.User;
@@ -22,6 +24,7 @@ import java.util.Map;
 public class ContactController {
 
     private final ContactService contactService;
+    private final EmailAddressService emailService;
 
     @PostMapping("/create")
     public ResponseEntity<DataResponse<ContactResponse>> createContact(@RequestBody @Valid AddContactRequest addContactRequest, Principal currentUser) {

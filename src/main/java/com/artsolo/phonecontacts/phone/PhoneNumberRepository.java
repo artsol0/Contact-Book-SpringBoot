@@ -1,7 +1,10 @@
 package com.artsolo.phonecontacts.phone;
 
+import com.artsolo.phonecontacts.contact.Contact;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface PhoneNumberRepository extends JpaRepository<PhoneNumber,Long> {
+import java.util.List;
 
+public interface PhoneNumberRepository extends JpaRepository<PhoneNumber,Long> {
+    List<PhoneNumber> findAllByContact(Contact contact);
 }
