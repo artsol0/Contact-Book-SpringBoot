@@ -77,6 +77,10 @@ public class ContactService {
         return contactRepository.findByUser(user).stream().map(this::getContactResponseFromContact).collect(Collectors.toList());
     }
 
+    public List<ContactResponse> getUserContactsByName(String name, User user) {
+        return contactRepository.findByNameContainingAndUser(name, user).stream().map(this::getContactResponseFromContact).collect(Collectors.toList());
+    }
+
     public Contact changeContactImage(Contact contact, MultipartFile image) {
         Path imagePath = Path.of(contact.getImagePath());
         if (!imagePath.getFileName().toString().equals("default-avatar-icon.jpg")) {

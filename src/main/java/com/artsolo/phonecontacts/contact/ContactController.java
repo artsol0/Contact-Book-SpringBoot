@@ -108,4 +108,14 @@ public class ContactController {
         return ResponseEntity.ok().body(new DataResponse<>(true, HttpStatus.OK.value(),
                 contactService.getUserContacts(user)));
     }
+
+    @GetMapping("/find")
+    public ResponseEntity<DataResponse<List<ContactResponse>>> getContactsByName(
+            @RequestParam("name") String name,
+            Principal currentUser)
+    {
+        User user = (User) ((UsernamePasswordAuthenticationToken) currentUser).getPrincipal();
+        return ResponseEntity.ok().body(new DataResponse<>(true, HttpStatus.OK.value(),
+                contactService.getUserContactsByName(name, user)));
+    }
 }

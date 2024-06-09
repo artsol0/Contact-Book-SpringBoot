@@ -10,4 +10,5 @@ public interface ContactRepository extends JpaRepository<Contact, Long> {
     boolean existsByEmailAddressesEmailAndUser(String email, User user);
     boolean existsByPhoneNumbersPhoneNumberAndUser(String phoneNumber, User user);
     List<Contact> findByUser(User user);
+    List<Contact> findByNameContainingAndUser(String name, User user);
 }
