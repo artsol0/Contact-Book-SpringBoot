@@ -16,6 +16,7 @@ It is designed using REST API principles and JWT tokens for secure authenticatio
 
 * User Registration and Authentication: Users can register accounts and log in to them.
 * Contact Management: Users can create, update, and delete their own contacts.
+* Contact Searching: Users can search for contacts by name.
 * PDF File Generation: The application allows users to generate a PDF file containing a list of their contacts.
 
 ## Technologies Used
