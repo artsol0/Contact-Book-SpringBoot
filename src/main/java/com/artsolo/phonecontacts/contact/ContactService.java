@@ -94,6 +94,7 @@ public class ContactService {
                         new EmailAddressResponse(emailAddress.getId(), emailAddress.getEmail())).toList())
                 .phones(contact.getPhoneNumbers().stream().map(phoneNumber ->
                         new PhoneNumberResponse(phoneNumber.getId(), phoneNumber.getPhoneNumber())).toList())
+                .imagePath(contact.getImagePath())
                 .image(imageService.getImage(contact.getImagePath()))
                 .build();
     }

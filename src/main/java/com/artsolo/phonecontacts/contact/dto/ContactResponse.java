@@ -18,5 +18,6 @@ public class ContactResponse {
     private String name;
     private List<EmailAddressResponse> emails;
     private List<PhoneNumberResponse> phones;
+    private String imagePath;
     private byte[] image;
 }

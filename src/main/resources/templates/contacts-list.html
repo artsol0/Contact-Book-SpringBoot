@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>PDF - Contacts List</title>
+    <style>
+        .title-text {
+            padding: 1px;
+            color: #fff;
+            text-align: center;
+            background-color: #538ebd;
+        }
+
+        table {
+          font-family: arial, sans-serif;
+          border-collapse: collapse;
+          width: 100%;
+        }
+
+        td, th {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+        }
+
+        tr:nth-child(even) {
+          background-color:  #f7f7f7;
+        }
+
+        .round-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        ul {
+          list-style-type: none;
+          margin: 0;
+          padding: 0;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="title">
+        <div class="title-text">
+            <h1><span th:text="${userName}">Username</span> contacts</h1>
+        </div>
+    </div>
+    <table>
+        <thead>
+        <tr>
+            <th style="text-align: center;">Image</th>
+            <th>Contact Name</th>
+            <th>Phone Numbers</th>
+            <th>Email Addresses</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="contact : ${contacts}">
+            <td style="text-align: center;">
+                <img class="round-image" th:src="${contact.imagePath}" alt="${contact.name} + ' image'">
+            </td>
+            <td th:text="${contact.name}">Name</td>
+            <td>
+                <ul>
+                    <li th:each="phone : ${contact.phones}" th:text="${phone.phone}">Phone Number</li>
+                </ul>
+            </td>
+            <td>
+                <ul>
+                    <li th:each="email : ${contact.emails}" th:text="${email.email}">Email Address</li>
+                </ul>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</body>
+</html>
