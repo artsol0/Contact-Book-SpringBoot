@@ -26,7 +26,7 @@ It is designed using REST API principles and JWT tokens for secure authenticatio
 * Spring Web
 * Spring Data JPA
 * Spring Validation
-* MySQL Driver
+* PostgreSQL Driver
 * H2 Database
 * Thymeleaf
 * Mockito with JUnit 5
