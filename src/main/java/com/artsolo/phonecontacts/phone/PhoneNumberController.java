@@ -5,10 +5,12 @@ import com.artsolo.phonecontacts.contact.ContactService;
 import com.artsolo.phonecontacts.responses.DataResponse;
 import com.artsolo.phonecontacts.responses.MessageResponse;
 import com.artsolo.phonecontacts.user.User;
+import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -16,15 +18,17 @@ import java.security.Principal;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/contact/{contactId}")
+@Validated
 public class PhoneNumberController {
 
     private final PhoneNumberService phoneService;
     private final ContactService contactService;
 
     @PostMapping("/add/phone")
-    public ResponseEntity<?> addNewPhoneNumberToContact(@PathVariable("contactId") Long contactId,
-                                                         @RequestParam("phone") String newPhone,
-                                                         Principal currentUser)
+    public ResponseEntity<?> addNewPhoneNumberToContact(
+            @PathVariable("contactId") Long contactId,
+            @RequestParam("phone") @Pattern(regexp = "^[+]?[(]?[0-9]{3}[)]?[-\\s.]?[0-9]{3}[-\\s.]?[0-9]{4,6}$") String newPhone,
+            Principal currentUser)
     {
         User user = (User) ((UsernamePasswordAuthenticationToken) currentUser).getPrincipal();
         Contact contact = contactService.getContactById(contactId);
@@ -42,7 +46,7 @@ public class PhoneNumberController {
     public ResponseEntity<?> updatePhoneNumber(
             @PathVariable("contactId") Long contactId,
             @RequestParam("id") Long phoneId,
-            @RequestParam("phone") String newPhone,
+            @RequestParam("phone") @Pattern(regexp = "^[+]?[(]?[0-9]{3}[)]?[-\\s.]?[0-9]{3}[-\\s.]?[0-9]{4,6}$") String newPhone,
             Principal currentUser)
     {
         User user = (User) ((UsernamePasswordAuthenticationToken) currentUser).getPrincipal();

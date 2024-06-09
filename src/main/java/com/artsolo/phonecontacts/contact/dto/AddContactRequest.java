@@ -9,6 +9,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -27,4 +28,6 @@ public class AddContactRequest {
     @PhoneCollection
     @NotEmpty(message = "Contact must at list contain one phone number")
     private List<String> phones;
+
+    private MultipartFile image;
 }

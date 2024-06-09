@@ -3,6 +3,7 @@ package com.artsolo.phonecontacts.exceptions;
 import com.artsolo.phonecontacts.responses.DataResponse;
 import com.artsolo.phonecontacts.responses.MessageResponse;
 import io.jsonwebtoken.MalformedJwtException;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -51,6 +52,12 @@ public class ControllerAdvisor {
         ex.getBindingResult().getAllErrors().forEach((error) ->
             errors.add(new MessageResponse(false, HttpStatus.BAD_REQUEST.value(), error.getDefaultMessage())));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new DataResponse<>(false, HttpStatus.BAD_REQUEST.value(), errors));
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<MessageResponse> handleConstraintViolationException(ConstraintViolationException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new MessageResponse(false, HttpStatus.BAD_REQUEST.value(), ex.getMessage()));
     }
 
     @ExceptionHandler(MalformedJwtException.class)

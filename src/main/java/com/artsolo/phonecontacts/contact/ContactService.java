@@ -11,7 +11,9 @@ import com.artsolo.phonecontacts.user.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 public class ContactService {
 
     private final ContactRepository contactRepository;
+    private final ImageService imageService;
 
     public Contact getContactById(Long id) {
         return contactRepository.findById(id).orElseThrow(() -> new NoDataFoundException("Contact", id));
@@ -46,6 +49,12 @@ public class ContactService {
             return PhoneNumber.builder().contact(contact).phoneNumber(phone).build();
         }).toList();
 
+        if (request.getImage() != null) {
+            contact.setImagePath(imageService.saveImageToUserStorage(user.getUsername(), request.getImage()));
+        } else {
+            contact.setImagePath("src/main/resources/static/default-avatar-icon.jpg");
+        }
+
         contact.setEmailAddresses(emailAddresses);
         contact.setPhoneNumbers(phoneNumbers);
         return contactRepository.save(contact);
@@ -68,6 +77,15 @@ public class ContactService {
         return contactRepository.findByUser(user).stream().map(this::getContactResponseFromContact).collect(Collectors.toList());
     }
 
+    public Contact changeContactImage(Contact contact, MultipartFile image) {
+        Path imagePath = Path.of(contact.getImagePath());
+        if (!imagePath.getFileName().toString().equals("default-avatar-icon.jpg")) {
+            imageService.deleteImage(contact.getImagePath());
+        }
+        contact.setImagePath(imageService.saveImageToUserStorage(contact.getUser().getUsername(), image));
+        return contactRepository.save(contact);
+    }
+
     public ContactResponse getContactResponseFromContact(Contact contact) {
         return ContactResponse.builder()
                 .id(contact.getId())
@@ -76,6 +94,7 @@ public class ContactService {
                         new EmailAddressResponse(emailAddress.getId(), emailAddress.getEmail())).toList())
                 .phones(contact.getPhoneNumbers().stream().map(phoneNumber ->
                         new PhoneNumberResponse(phoneNumber.getId(), phoneNumber.getPhoneNumber())).toList())
+                .image(imageService.getImage(contact.getImagePath()))
                 .build();
     }
 }

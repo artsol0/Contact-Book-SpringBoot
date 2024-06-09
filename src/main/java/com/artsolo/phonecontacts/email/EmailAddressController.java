@@ -5,10 +5,12 @@ import com.artsolo.phonecontacts.contact.ContactService;
 import com.artsolo.phonecontacts.responses.DataResponse;
 import com.artsolo.phonecontacts.responses.MessageResponse;
 import com.artsolo.phonecontacts.user.User;
+import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -16,6 +18,7 @@ import java.security.Principal;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/contact/{contactId}")
+@Validated
 public class EmailAddressController {
 
     private final EmailAddressService emailService;
@@ -23,7 +26,7 @@ public class EmailAddressController {
 
     @PostMapping("/add/email")
     public ResponseEntity<?> addNewEmailAddressToContact(@PathVariable("contactId") Long contactId,
-                                                         @RequestParam("email") String newEmail,
+                                                         @RequestParam("email") @Email String newEmail,
                                                          Principal currentUser)
     {
         User user = (User) ((UsernamePasswordAuthenticationToken) currentUser).getPrincipal();
@@ -42,7 +45,7 @@ public class EmailAddressController {
     public ResponseEntity<?> updateEmailAddress(
             @PathVariable("contactId") Long contactId,
             @RequestParam("id") Long emailId,
-            @RequestParam("email") String newEmail,
+            @RequestParam("email") @Email String newEmail,
             Principal currentUser)
     {
         User user = (User) ((UsernamePasswordAuthenticationToken) currentUser).getPrincipal();

@@ -2,7 +2,6 @@ package com.artsolo.phonecontacts.contact;
 
 import com.artsolo.phonecontacts.contact.dto.AddContactRequest;
 import com.artsolo.phonecontacts.contact.dto.ContactResponse;
-import com.artsolo.phonecontacts.email.EmailAddress;
 import com.artsolo.phonecontacts.email.EmailAddressService;
 import com.artsolo.phonecontacts.responses.DataResponse;
 import com.artsolo.phonecontacts.responses.MessageResponse;
@@ -13,10 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,14 +26,24 @@ public class ContactController {
     private final EmailAddressService emailService;
 
     @PostMapping("/create")
-    public ResponseEntity<DataResponse<ContactResponse>> createContact(@RequestBody @Valid AddContactRequest addContactRequest, Principal currentUser) {
+    public ResponseEntity<DataResponse<ContactResponse>> createContact(
+            @ModelAttribute @Valid AddContactRequest addContactRequest,
+            Principal currentUser)
+    {
         User user = (User) ((UsernamePasswordAuthenticationToken) currentUser).getPrincipal();
         Contact contact = contactService.createNewContact(addContactRequest, user);
-        return ResponseEntity.ok().body(new DataResponse<>(true, HttpStatus.OK.value(), contactService.getContactResponseFromContact(contact)));
+        return ResponseEntity.ok().body(new DataResponse<>(
+                true,
+                HttpStatus.OK.value(),
+                contactService.getContactResponseFromContact(contact)));
     }
 
     @PutMapping("/rename")
-    public ResponseEntity<?> renameContact(@RequestParam("id") Long id, @RequestParam("name") String name, Principal currentUser) {
+    public ResponseEntity<?> renameContact(
+            @RequestParam("id") Long id,
+            @RequestParam("name") String name,
+            Principal currentUser)
+    {
         User user = (User) ((UsernamePasswordAuthenticationToken) currentUser).getPrincipal();
         Contact contact = contactService.getContactById(id);
         if (contactService.isUserContactOwner(contact, user)) {
@@ -43,7 +52,26 @@ public class ContactController {
                     contactService.getContactResponseFromContact(svdContact)));
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse(
-                false, HttpStatus.FORBIDDEN.value(), "You are not the owner of the contact to perform this action."));
+                false, HttpStatus.FORBIDDEN.value(),
+                "You are not the owner of the contact to perform this action."));
+    }
+
+    @PutMapping("/change-image")
+    public ResponseEntity<?> changeContactImage(
+            @RequestParam("id") Long id,
+            @RequestParam("image") MultipartFile newImage,
+            Principal currentUser)
+    {
+        User user = (User) ((UsernamePasswordAuthenticationToken) currentUser).getPrincipal();
+        Contact contact = contactService.getContactById(id);
+        if (contactService.isUserContactOwner(contact, user)) {
+            Contact svdContact = contactService.changeContactImage(contact, newImage);
+            return ResponseEntity.ok().body(new DataResponse<>(true, HttpStatus.OK.value(),
+                    contactService.getContactResponseFromContact(svdContact)));
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageResponse(
+                false, HttpStatus.FORBIDDEN.value(),
+                "You are not the owner of the contact to perform this action."));
     }
 
     @DeleteMapping("/delete")
