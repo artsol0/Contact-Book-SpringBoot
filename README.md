@@ -19,6 +19,9 @@ It is designed using REST API principles and JWT tokens for secure authenticatio
 * Contact Searching: Users can search for contacts by name.
 * PDF File Generation: The application allows users to generate a PDF file containing a list of their contacts.
 
+### PDF Preview
+![Screenshot from 2024-06-10 13-46-09](https://github.com/artsol0/Contact-Book-SpringBoot/assets/108554037/3d42f60d-4c63-4d90-99ac-74ba31fed59f)
+
 ## Technologies Used
 
 * Spring Boot 3
